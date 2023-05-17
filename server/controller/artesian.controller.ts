@@ -20,7 +20,30 @@ router.post("/", async (req: Request, res: Response) => {
 	} catch (err) {
 		return res.status(404).json({
 			message: "an error occured",
-            err
+			err,
+		});
+	}
+});
+
+router.post("/search/nearby", async (req: Request, res: Response) => {
+	try {
+		const { latitude, longitude } = req.body;
+		const searching = await artesian.find({
+			location: {
+				$near: {
+					$geometry: {
+						type: "Point",
+						coordinates: [latitude, longitude],
+					},
+					$maxDistance: 5000,
+				},
+			},
+		});
+		return res.status(200).json(searching);
+	} catch (err) {
+		return res.status(404).json({
+			message: "an error occured",
+			err,
 		});
 	}
 });

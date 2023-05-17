@@ -28,4 +28,6 @@ const mySchema = new Schema(
 	{ timestamps: true },
 );
 
+mySchema.index({ location: "2dsphere" });
+
 export default mongoose.model("artesians", mySchema);

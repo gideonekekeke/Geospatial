@@ -6,6 +6,8 @@ import { Icon } from "leaflet";
 function App() {
 	// let me = []
 	const [me, setMe] = useState([]);
+	const [data, setData] = useState([]);
+  
 
 	const markerIcon = new Icon({
 		iconUrl:
@@ -56,6 +58,20 @@ function App() {
 			navigator.geolocation.getCurrentPosition(
 				(position) => {
 					const { latitude, longitude } = position.coords;
+
+					const SearchNearby = async () => {
+						const res = await axios
+							.post("http://localhost:9095/artesian/search/nearby", {
+								latitude,
+								longitude,
+							})
+							.then((res) => {
+								console.log(res);
+								setData(res?.data);
+							});
+					};
+
+					SearchNearby();
 					// console.log(latitude, longitude);
 					// me.push(latitude, longitude);
 					setMe([latitude, longitude]);
@@ -69,16 +85,17 @@ function App() {
 			// Geolocation not supported by the browser
 		}
 		// getLocation();
-	}, [me]);
+	}, [me, data]);
 
 	console.log("this is mes", me);
 
 	return (
-		<>
+		<div style={{ overflow: "hidden" }}>
 			<MapContainer
 				style={{
-					height: "700px",
-					width: "100%",
+					height: "97vh",
+					width: "100vw",
+					overflow: "hidden",
 				}}
 				center={[6.4531, 3.3958]}
 				zoom={13}
@@ -87,11 +104,19 @@ function App() {
 					attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
 					url='https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
 				/>
-				{mapMarkers.map((props) => (
-					<Marker position={props.loc}>
-						<Popup>{props.name}</Popup>
-					</Marker>
-				))}
+				{data.length >= 1 ? (
+					<>
+						{data.map((props) => (
+							<Marker position={props.location?.coordinates}>
+								<Popup>
+									<h2>{props?.name}</h2>
+									<h5>{props?.email}</h5>
+									<p>{props?.category}</p>
+								</Popup>
+							</Marker>
+						))}
+					</>
+				) : null}
 
 				{me.length > 1 ? (
 					<Marker icon={markerIcon} position={me}>
@@ -102,21 +127,27 @@ function App() {
 			<div
 				style={{
 					position: "absolute",
-					height: "100px",
-					width: "300px",
-					background: "white",
+					height: "70px",
+					width: "100%",
+					// background: "white",
 					top: 0,
-					left: "300px",
+					// left: "300px",
 					right: 0,
+					left: 0,
 					bottom: 0,
 					zIndex: 9999,
 					display: "flex",
 					justifyItems: "center",
 					alignItems: "center",
 				}}>
-				Select an artician
+				<select style={{ width: "300px", height: "40px", marginLeft: "100px" }}>
+					<option>Painter</option>
+					<option>Painter</option>
+					<option>Painter</option>
+					<option>Painter</option>
+				</select>
 			</div>
-		</>
+		</div>
 	);
 }
 
