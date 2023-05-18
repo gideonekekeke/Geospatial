@@ -2,12 +2,12 @@ import React, { useState } from "react";
 import { MapContainer, Marker, Popup, TileLayer, useMap } from "react-leaflet";
 import axios from "axios";
 import { Icon } from "leaflet";
+import Interweavedocs from "./Components/Interweavedocs";
 
 function App() {
 	// let me = []
 	const [me, setMe] = useState([]);
 	const [data, setData] = useState([]);
-  
 
 	const markerIcon = new Icon({
 		iconUrl:
@@ -62,8 +62,8 @@ function App() {
 					const SearchNearby = async () => {
 						const res = await axios
 							.post("http://localhost:9095/artesian/search/nearby", {
-								latitude,
-								longitude,
+								latitude: 6.4589204,
+								longitude: 3.3014819,
 							})
 							.then((res) => {
 								console.log(res);
@@ -112,6 +112,7 @@ function App() {
 									<h2>{props?.name}</h2>
 									<h5>{props?.email}</h5>
 									<p>{props?.category}</p>
+									<p>{props.location?.coordinates}</p>
 								</Popup>
 							</Marker>
 						))}
@@ -119,8 +120,8 @@ function App() {
 				) : null}
 
 				{me.length > 1 ? (
-					<Marker icon={markerIcon} position={me}>
-						<Popup>this is me</Popup>
+					<Marker icon={markerIcon} position={[6.4474, 3.3903]}>
+						<Popup>this is me{me}</Popup>
 					</Marker>
 				) : null}
 			</MapContainer>
@@ -146,6 +147,11 @@ function App() {
 					<option>Painter</option>
 					<option>Painter</option>
 				</select>
+				<br />
+				<br />
+				<br />
+				<br />
+				// <Interweavedocs />
 			</div>
 		</div>
 	);

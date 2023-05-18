@@ -33,7 +33,7 @@ router.post("/search/nearby", async (req: Request, res: Response) => {
 				$near: {
 					$geometry: {
 						type: "Point",
-						coordinates: [latitude, longitude],
+						coordinates: [latitude,longitude],
 					},
 					$maxDistance: 5000,
 				},
